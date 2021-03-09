@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
+import Big from 'big.js'
 import './App.css'
 
 function App() {
-  const [periodYears, setPeriod] = useState()
-  const [importeTotal, setImporteTotal] = useState()
-  const [interes, setInteres] = useState()
-  const [cuota, setCuota] = useState()
+  const [periodYears, setPeriod] = useState(25)
+  const [importeTotal, setImporteTotal] = useState(270000)
+  const [interes, setInteres] = useState(1.5)
+  const [cuota, setCuota] = useState(0)
   const [mortgageTable, setMortgageTable] = useState()
 
   const handleSubmit = (event) => {
@@ -90,7 +91,7 @@ function App() {
         <input
           id='importeTotal'
           type='number'
-          step={10000}
+          step={importeTotal < 50000 ? 1000 : 10000}
           value={importeTotal}
           onChange={handleChange}
         />
@@ -100,7 +101,7 @@ function App() {
         <input
           type='number'
           id='periodYears'
-          step={5}
+          step={1}
           value={periodYears}
           onChange={handleChange}
         />
