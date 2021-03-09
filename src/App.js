@@ -3,19 +3,21 @@ import Big from 'big.js'
 import './App.css'
 
 function App() {
-  const [periodYears, setPeriod] = useState(25)
-  const [importeTotal, setImporteTotal] = useState(270000)
-  const [interes, setInteres] = useState(1.5)
+  const [periodYears, setPeriod] = useState(Big(25))
+  const [importeTotal, setImporteTotal] = useState(Big(240000))
+  const [interes, setInteres] = useState(Big(2.45))
   const [cuota, setCuota] = useState(0)
   const [mortgageTable, setMortgageTable] = useState()
 
   const handleSubmit = (event) => {
     event.preventDefault()
     setCuota(() => {
-      const _dividendo = importeTotal * (interes / 12)
-      const _divisor =
-        100 * (1 - (1 + interes / 12 / 100) ** -(periodYears * 12))
-      return (_dividendo / _divisor).toFixed(2)
+      // const _dividendo = importeTotal * (interes / 12)
+      const _dividendo = importeTotal.times(interes.div(12))
+      // const _divisor = 100 * (1 - (1 + interes / 12 / 100) ** -(periodYears * 12))
+      const _divisor = Big(100).times(Big(1).minus(Big(1).plus(interes.div(12).div(100)).pow(periodYears.toNumber() * -12)))
+      // return (_dividendo / _divisor).toFixed(2)
+      return _dividendo.div(_divisor)
     })
   }
 
@@ -24,52 +26,24 @@ function App() {
     const { id, value } = event.target
     switch (id) {
       case 'importeTotal':
-        setImporteTotal(value)
+        setImporteTotal(Big(value))
         break
       case 'periodYears':
-        setPeriod(value)
+        setPeriod(Big(value))
         break
       case 'interes':
-        setInteres(value)
+        setInteres(Big(value))
         break
     }
   }
-
-  Math.round10 = (value, exp) =>
-    decimalAdjust('round', value, exp)
-
-  Math.floor10 = (value, exp) =>
-    decimalAdjust('floor', value, exp)
   
-  Math.ceil10 = (value, exp) =>
-    decimalAdjust('ceil', value, exp)
-
-  const decimalAdjust = (type, value, exp) => {
-    // Si el exp no está definido o es cero...
-    if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value)
-    }
-    value = +value
-    exp = +exp
-    // Si el valor no es un número o el exp no es un entero...
-    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN
-    }
-    // Shift
-    value = value.toString().split('e')
-    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)))
-    // Shift back
-    value = value.toString().split('e')
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp))
-  }
-
   const calculateMortgageTable = () => {
-    let pendiente = +importeTotal
-    const months = periodYears * 12
+    let pendiente = Big(importeTotal)
+    const months = periodYears.times(12)
     const table = []
     for (let i = 0; i <= months; i++) {
-      const interesPagado = Math.ceil10(pendiente * interes / (12 * 100), -2)
-      const amortizado = Math.ceil10(cuota - interesPagado, -2)
+      const interesPagado = pendiente.times(interes.div(12 * 100))
+      const amortizado = cuota.minus(interesPagado)
       const month = {
         n: i,
         cuota,
@@ -77,7 +51,7 @@ function App() {
         interesPagado,
         amortizado,
       }
-      pendiente = Math.ceil10(pendiente - amortizado, -2)
+      pendiente = pendiente.minus(amortizado)
       table.push(month)
     }
     setMortgageTable(table)
@@ -91,8 +65,8 @@ function App() {
         <input
           id='importeTotal'
           type='number'
-          step={importeTotal < 50000 ? 1000 : 10000}
-          value={importeTotal}
+          step={importeTotal.toNumber() < 50000 ? 1000 : 10000}
+          value={importeTotal.toNumber()}
           onChange={handleChange}
         />
 
@@ -102,7 +76,7 @@ function App() {
           type='number'
           id='periodYears'
           step={1}
-          value={periodYears}
+          value={periodYears.toNumber()}
           onChange={handleChange}
         />
 
@@ -112,13 +86,13 @@ function App() {
           type='number'
           step={0.01}
           id='interes'
-          value={interes}
+          value={interes.toNumber()}
           onChange={handleChange}
         />
 
         <button>CALCULAR CUOTA</button>
       </form>
-      {!!cuota && <div className='result'>CUOTA: {cuota}</div>}
+      {!!cuota && <div className='result'>CUOTA: {cuota.toNumber()}</div>}
       <button onClick={calculateMortgageTable}>Mostrar tabla de amortización</button>
       {!!mortgageTable && (
         <div className='tablaAmortizacion'>
@@ -137,10 +111,10 @@ function App() {
                 return (
                   <tr key={row.n}>
                     <td>{row.n}</td>
-                    <td>{row.cuota}</td>
-                    <td>{row.interesPagado}</td>
-                    <td>{row.amortizado}</td>
-                    <td>{row.pendiente}</td>
+                    <td>{row.cuota.abs().toFixed(2)}</td>
+                    <td>{row.interesPagado.abs().toFixed(2)}</td>
+                    <td>{row.amortizado.abs().toFixed(2)}</td>
+                    <td>{row.pendiente.abs().toFixed(2)}</td>
                   </tr>
                 )
               })}
