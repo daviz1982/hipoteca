@@ -1,38 +1,112 @@
-.App {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  background-color: antiquewhite;
+  font-size: 16px/1.5;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  
+  color: darkslategray;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  height: max(100vh, 100%);
+  margin: 0;
+  padding: 8vh 10vw;
+}
+
+h1 {
+  font-size: 3rem;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+form,
+.result {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin: auto;
+  min-width: 360px;
+  width: 30vw;
 }
 
-.App-link {
-  color: #61dafb;
+.formGroup {
+  display: flex;
+  flex: 1 1 5rem;
+  flex-direction: column;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.formGroup label {
+  display: block;
+  font-size: 1.5rem;
+  margin: .8rem 0 0;
 }
+
+.formGroup input {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.2rem;
+  height: 2.4rem;
+  margin: .4rem 0;
+  padding: 0 0 0 1rem;
+}
+
+.button {
+  border: none;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  display: block;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.2rem;
+  min-height: 3rem;
+  flex: 0 0 auto;
+  margin: 1rem auto;
+  padding: 0 2rem;
+  width: auto;
+}
+
+.button:focus,
+.button:active {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.result {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 1rem auto 3.5rem;
+  text-align: center;
+}
+
+.tablaAmortizacion {
+  background-color: antiquewhite;
+  border: 1px solid black;
+  margin: 10vh auto;
+  width: 40vw;
+}
+
+.tablaAmortizacion > table {
+  width: 100%;
+}
+
+.tablaAmortizacion > table th {
+  border-bottom: 2px solid black;
+}
+
+.tablaAmortizacion > table th, .tablaAmortizacion > table td {
+  padding: .25rem .75rem .5rem 1rem;
+}
+.tablaAmortizacion > table tr:nth-child(2n) {
+  background-color: #d0d0d0;
+}
+.tablaAmortizacion > table tr:nth-child(12n + 1) > td {
+  border-bottom: 2px solid #333;
+}
+
+.center {text-align: center;}
+.right {text-align: right;}

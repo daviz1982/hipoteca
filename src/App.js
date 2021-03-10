@@ -15,7 +15,13 @@ function App() {
       // const _dividendo = importeTotal * (interes / 12)
       const _dividendo = importeTotal.times(interes.div(12))
       // const _divisor = 100 * (1 - (1 + interes / 12 / 100) ** -(periodYears * 12))
-      const _divisor = Big(100).times(Big(1).minus(Big(1).plus(interes.div(12).div(100)).pow(periodYears.toNumber() * -12)))
+      const _divisor = Big(100).times(
+        Big(1).minus(
+          Big(1)
+            .plus(interes.div(12).div(100))
+            .pow(periodYears.toNumber() * -12)
+        )
+      )
       // return (_dividendo / _divisor).toFixed(2)
       return _dividendo.div(_divisor)
     })
@@ -36,7 +42,7 @@ function App() {
         break
     }
   }
-  
+
   const calculateMortgageTable = () => {
     let pendiente = Big(importeTotal)
     const months = periodYears.times(12)
@@ -59,44 +65,53 @@ function App() {
 
   return (
     <div className='main'>
+      <h1>Calculadora de hipoteca</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor='importeTotal'>IMPORTE TOTAL</label>
-
-        <input
-          id='importeTotal'
-          type='number'
-          step={importeTotal.toNumber() < 50000 ? 1000 : 10000}
-          value={importeTotal.toNumber()}
-          onChange={handleChange}
-        />
-
-        <label htmlFor='periodYears'>AÑOS</label>
-
-        <input
-          type='number'
-          id='periodYears'
-          step={1}
-          value={periodYears.toNumber()}
-          onChange={handleChange}
-        />
-
-        <label htmlFor='interes'>INTERÉS</label>
-
-        <input
-          type='number'
-          step={0.01}
-          id='interes'
-          value={interes.toNumber()}
-          onChange={handleChange}
-        />
-
-        <button>CALCULAR CUOTA</button>
+        <div className='formGroup'>
+          <label htmlFor='importeTotal'>IMPORTE TOTAL (€)</label>
+          <input
+            id='importeTotal'
+            type='number'
+            step={importeTotal.toNumber() < 50000 ? 1000 : 10000}
+            value={importeTotal.toNumber()}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='formGroup'>
+          <label htmlFor='periodYears'>AÑOS</label>
+          <input
+            type='number'
+            id='periodYears'
+            step={1}
+            value={periodYears.toNumber()}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='formGroup'>
+          <label htmlFor='interes'>INTERÉS (%)</label>
+          <input
+            type='number'
+            step={0.01}
+            id='interes'
+            value={interes.toNumber()}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='for mGroup'>
+          <button className='button'>CALCULAR CUOTA</button>
+        </div>
       </form>
-      {!!cuota && <div className='result'>CUOTA: {cuota.toNumber()}</div>}
-      <button onClick={calculateMortgageTable}>Mostrar tabla de amortización</button>
+      {!!cuota && (
+        <>
+          <div className='result'>CUOTA: {cuota.toFixed(2)}€ al mes</div>
+          <button className='button' onClick={calculateMortgageTable}>
+            Mostrar tabla de amortización
+          </button>
+        </>
+      )}
       {!!mortgageTable && (
         <div className='tablaAmortizacion'>
-          <table>
+          <table cellspacing={0} cellpadding={0}>
             <thead>
               <tr>
                 <th>Mes</th>
@@ -110,11 +125,11 @@ function App() {
               {mortgageTable.map((row) => {
                 return (
                   <tr key={row.n}>
-                    <td>{row.n}</td>
-                    <td>{row.cuota.abs().toFixed(2)}</td>
-                    <td>{row.interesPagado.abs().toFixed(2)}</td>
-                    <td>{row.amortizado.abs().toFixed(2)}</td>
-                    <td>{row.pendiente.abs().toFixed(2)}</td>
+                    <td className="center">{row.n}</td>
+                    <td className="right">{row.cuota.abs().toFixed(2)} €</td>
+                    <td className="right">{row.interesPagado.abs().toFixed(2)} €</td>
+                    <td className="right">{row.amortizado.abs().toFixed(2)} €</td>
+                    <td className="right">{row.pendiente.abs().toFixed(2)} €</td>
                   </tr>
                 )
               })}
